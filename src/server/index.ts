@@ -94,7 +94,7 @@ const serviceImplementation: ExampleServiceHandlers = {
   }
 };
 
-export function createServer(): grpc.Server {
+export default function createServer(): grpc.Server {
   const server = new grpc.Server();
   server.addService(
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
