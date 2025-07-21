@@ -1,8 +1,39 @@
 # gRPC TypeScript Microservice
 
-This is a production-ready gRPC microservice built with TypeScript, featuring containerization, hot reloading, and following software engineering best practices.
+gRPC is a modern, high-performance Remote Procedure Call (RPC) framework that enables client and server applications to communicate transparently.
+Let me break down its architecture and core concepts before we dive into the TypeScript implementation.
 
-## About gRPC
+## Core Architecture Components
+
+### Protocol Buffers (protobuf)
+
+- Interface Definition Language (IDL): Defines services and message structures in .proto files
+- Language-Neutral: Generates code for multiple languages
+- Binary Format: More efficient than JSON/XML
+- Schema Evolution: Backward/forward compatible through field numbers
+
+### gRPC Server
+
+- Implements service interfaces
+- Handles incoming RPC calls
+- Manages connections, threading, and concurrency
+- Supports interceptors for middleware functionality
+
+### gRPC Client
+
+- Stub that mimics server methods locally
+- Manages connections to servers
+- Provides different calling styles (blocking/non-blocking)
+- Handles load balancing and retries
+
+### Transport Layer
+
+- Uses HTTP/2 as transport protocol
+- Enables multiplexing (multiple streams over single connection)
+- Supports bidirectional streaming
+- Provides flow control and header compression
+
+### About gRPC
 
 gRPC is a modern, high-performance RPC (Remote Procedure Call) framework that can run in any environment.
 
