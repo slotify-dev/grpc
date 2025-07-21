@@ -45,6 +45,7 @@
   },
   "include": [
     "src/**/*",
+    "scripts/**/*",
     "proto/**/*.proto.d.ts"
   ],
   "exclude": [

@@ -9,15 +9,16 @@
     "test": "bun test",
     "start": "bun dist/index.js",
     "lint:types": "tsc --noEmit",
+    "postinstall": "bun run generate",
     "dev": "bun --watch src/index.ts",
     "client": "bun src/client/test.ts",
     "build": "bun run generate && tsc",
     "lint:style": "eslint src --ext .ts",
+    "generate": "bun scripts/generate.ts",
     "clean": "rm -rf dist node_modules bun.lockb",
     "lint": "bun run lint:types && bun run lint:style",
     "docker:build": "docker build -t grpc-typescript .",
-    "docker:run": "docker run -p 50051:50051 grpc-typescript",
-    "generate": "grpc_tools_node_protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --ts_out=./src/generated --js_out=import_style=commonjs,binary:./src/generated --grpc_out=grpc_js:./src/generated -I ./proto ./proto/*.proto"
+    "docker:run": "docker run -p 50051:50051 grpc-typescript"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.13.4",
