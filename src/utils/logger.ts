@@ -3,7 +3,7 @@ import winston from 'winston';
 
 const { combine, timestamp, json, errors } = winston.format;
 
-export default winston.createLogger({
+const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: combine(
     errors({ stack: true }),
@@ -22,9 +22,11 @@ export default winston.createLogger({
   ],
 });
 
-// Add stream for Express/Morgan if needed
 logger.stream = {
   write: (message: string) => {
     logger.info(message.trim());
   },
 };
+
+
+export default logger
