@@ -1,45 +1,70 @@
 import path from 'path';
+
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 
-import { ProtoGrpcType } from '../generated/example';
-import { ExampleRequest } from '../generated/example/ExampleRequest';
-import { ExampleResponse } from '../generated/example/ExampleResponse';
-import { ExampleServiceHandlers } from '../generated/example/ExampleService';
+import { isProtoGrpcType } from '../utils/grpc-types';
+import type { ExampleRequest} from '../generated/example_pb';
+import type { ExampleServiceHandlers } from '../generated/example_grpc_pb';
 
 const PROTO_PATH = path.join(__dirname, '../../proto/example.proto');
 
-const packageDefinition = protoLoader.loadSync(PROTO_PATH);
-const proto = (grpc.loadPackageDefinition(packageDefinition) as unknown) as ProtoGrpcType;
+// Load proto file with recommended options
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true
+});
 
-const handlers: ExampleServiceHandlers = {
-  UnaryCall(call: grpc.ServerUnaryCall<ExampleRequest, ExampleResponse>, callback: grpc.sendUnaryData<ExampleResponse>) {
-    console.log(`Server received: ${call.request.message}`);
+const loadedPackage = grpc.loadPackageDefinition(packageDefinition);
+if (!isProtoGrpcType(loadedPackage)) {
+  throw new Error('Failed to load package definition - unexpected shape');
+}
+
+const proto = loadedPackage;
+
+const serviceImplementation: ExampleServiceHandlers = {
+  UnaryCall(
+    call: grpc.ServerUnaryCall<ExampleRequest, { message: string; status: number }>,
+    callback: grpc.sendUnaryData<{ message: string; status: number }>
+  ) {
+    console.log(`[${new Date().toISOString()}] Unary call received:`, call.request);
     callback(null, {
-      message: `Hello from server! You said: ${call.request.message}`,
+      message: `Echo: ${call.request.message}`,
       status: 200
     });
   },
 
-  ServerStreamingCall(call: grpc.ServerWritableStream<ExampleRequest, ExampleResponse>) {
-    console.log(`Server streaming received: ${call.request.message}`);
-    
-    for (let i = 0; i < 5; i++) {
+  ServerStreamingCall(
+    call: grpc.ServerWritableStream<ExampleRequest, { message: string; status: number }>
+  ) {
+    console.log(`[${new Date().toISOString()}] Server streaming started`);
+    let count = 0;
+    const interval = setInterval(() => {
+      if (count >= 5) {
+        clearInterval(interval);
+        call.end();
+        return;
+      }
       call.write({
-        message: `Stream response ${i} for: ${call.request.message}`,
+        message: `Stream message ${++count}`,
         status: 200
       });
-    }
-    
-    call.end();
+    }, 1000);
   },
 
-  ClientStreamingCall(call: grpc.ServerReadableStream<ExampleRequest, ExampleResponse>, callback: grpc.sendUnaryData<ExampleResponse>) {
+  ClientStreamingCall(
+    call: grpc.ServerReadableStream<ExampleRequest, { message: string; status: number }>,
+    callback: grpc.sendUnaryData<{ message: string; status: number }>
+  ) {
+    console.log(`[${new Date().toISOString()}] Client streaming started`);
     const messages: string[] = [];
     
     call.on('data', (request: ExampleRequest) => {
-      console.log(`Server received streaming: ${request.message}`);
-      messages.push(request.message);
+      messages.push(request.message as string);
+      console.log(`Received chunk: ${request.message}`);
     });
 
     call.on('end', () => {
@@ -50,9 +75,12 @@ const handlers: ExampleServiceHandlers = {
     });
   },
 
-  BidirectionalStreamingCall(call: grpc.ServerDuplexStream<ExampleRequest, ExampleResponse>) {
+  BidirectionalStreamingCall(
+    call: grpc.ServerDuplexStream<ExampleRequest, { message: string; status: number }>
+  ) {
+    console.log(`[${new Date().toISOString()}] Bidirectional streaming started`);
     call.on('data', (request: ExampleRequest) => {
-      console.log(`Server received bidirectional: ${request.message}`);
+      console.log(`Received: ${request.message}`);
       call.write({
         message: `Echo: ${request.message}`,
         status: 200
@@ -60,15 +88,18 @@ const handlers: ExampleServiceHandlers = {
     });
 
     call.on('end', () => {
+      console.log('Client ended streaming');
       call.end();
     });
   }
 };
 
-function createServer(): grpc.Server {
+export function createServer(): grpc.Server {
   const server = new grpc.Server();
-  server.addService(proto.example.ExampleService.service, handlers);
+  server.addService(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+    proto.example.ExampleService.service,
+    serviceImplementation as grpc.UntypedServiceImplementation
+  );
   return server;
 }
-
-export default createServer;
