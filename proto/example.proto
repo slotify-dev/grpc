@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package example;
+
+service ExampleService {
+  rpc UnaryCall (ExampleRequest) returns (ExampleResponse) {};
+  rpc ServerStreamingCall (ExampleRequest) returns (stream ExampleResponse) {};
+  rpc ClientStreamingCall (stream ExampleRequest) returns (ExampleResponse) {};
+  rpc BidirectionalStreamingCall (stream ExampleRequest) returns (stream ExampleResponse) {};
+}
+
+message ExampleRequest {
+  string message = 1;
+}
+
+message ExampleResponse {
+  string message = 1;
+  int32 status = 2;
+}

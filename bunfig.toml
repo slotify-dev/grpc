@@ -1,0 +1,12 @@
+[install]
+# Use the fastest install strategy
+cache = true
+frozenLockfile = false
+
+[test]
+# Use the built-in test runner
+runner = "bun test"
+
+[run]
+# Prefer Bun's runtime over node
+prefer = "bun"
