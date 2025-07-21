@@ -1,32 +1,59 @@
-#!/usr/bin/env node
 import * as grpc from '@grpc/grpc-js';
 import { ServerCredentials } from '@grpc/grpc-js';
+import { createProductService } from './server/services/productService';
 
-// Initialize the gRPC server
+import loadConfig from './config';
+import logger from './utils/logger';
+import setupMetrics from './utils/monitoring';
+import HealthService from './server/services/healthService';
+
+// Load configuration
+const config = loadConfig();
+
+// Initialize server
 const server = new grpc.Server();
 
-// Define server configuration
-const PORT = 50051;
-const HOST = '0.0.0.0';
-const ADDRESS = `${HOST}:${PORT}`;
+// Register services
+const healthService = new HealthService();
+const productService = createProductService();
 
-// Starts the server with insecure credentials (for development)
+// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+server.addService(productService.service, productService.handlers);
+
+// Register health service
+server.addService(healthService.service, healthService.handlers);
+
+// Setup metrics
+const metrics = setupMetrics(server);
+
+// Start server
 server.bindAsync(
-  ADDRESS,
-  ServerCredentials.createInsecure(),
-  (error) => {
+  `${config.host}:${config.port}`,
+  config.tls ? ServerCredentials.createSsl() : ServerCredentials.createInsecure(),
+  (error, port) => {
     if (error) {
-      console.error('Server binding failed:', error);
+      logger.error('Server binding failed:', error);
       process.exit(1);
     }
-    console.log(`Server running at ${ADDRESS}`);
+    
+    // Set health status to SERVING
+    healthService.setStatus('product.ProductService', 'SERVING');
+    
+    logger.info(`Product Service running at ${config.host}:${port}`);
+    metrics.start();
   }
 );
 
-// Handle graceful shutdown
-process.on('SIGTERM', () => {
+// Graceful shutdown
+function gracefulShutdown() {
+  logger.info('Received shutdown signal');
+  healthService.setStatus('product.ProductService', 'NOT_SERVING');
+  metrics.stop();
   server.tryShutdown(() => {
-    console.log('Server gracefully stopped');
+    logger.info('Server gracefully stopped');
     process.exit(0);
   });
-});
+}
+
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);

@@ -15,7 +15,7 @@ interface ServerConfig {
   certPath?: string;
 }
 
-export function loadConfig(): ServerConfig {
+export default function loadConfig(): ServerConfig {
   // Default configuration
   const defaultConfig: ServerConfig = {
     host: process.env.HOST || '0.0.0.0',

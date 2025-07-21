@@ -1,7 +1,7 @@
 import type * as grpc from '@grpc/grpc-js';
 import * as health from 'grpc-js-health-check';
 
-export class HealthService {
+export default class HealthService {
   private readonly healthImpl: health.Implementation;
   public readonly service: grpc.ServiceDefinition;
   public readonly handlers: grpc.UntypedServiceImplementation;
