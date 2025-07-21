@@ -1,28 +1,59 @@
 {
   "compilerOptions": {
-    // Environment setup & latest features
-    "lib": ["ESNext"],
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleDetection": "force",
-    "jsx": "react-jsx",
-    "allowJs": true,
-
-    // Bundler mode
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "noEmit": true,
-
-    // Best practices
     "strict": true,
+    "target": "ES2022",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "skipLibCheck": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    
+    /* Type Checking */
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-
-    // Some stricter flags (disabled by default)
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false
-  }
+    "noPropertyAccessFromIndexSignature": true,
+    
+    /* Completeness */
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true,
+    
+    /* Advanced */
+    "removeComments": false,
+    "noErrorTruncation": true,
+    "preserveConstEnums": true,
+    
+    /* Paths */
+    "baseUrl": ".",
+    "paths": {
+      "@proto/*": ["./src/generated/*"],
+      "@server/*": ["./src/server/*"],
+      "@client/*": ["./src/client/*"],
+      "@utils/*": ["./src/utils/*"]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "proto/**/*.proto.d.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ],
+  "references": [
+    { "path": "./tsconfig.node.json" }
+  ]
 }
