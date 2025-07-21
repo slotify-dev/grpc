@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package product;
+
+service ProductService {
+  // Unary RPC
+  rpc GetProduct (ProductRequest) returns (Product) {};
+  
+  // Server streaming
+  rpc ListProducts (ProductFilter) returns (stream Product) {};
+  
+  // Client streaming
+  rpc CreateProducts (stream CreateProductRequest) returns (ProductSummary) {};
+  
+  // Bidirectional streaming
+  rpc ProcessProducts (stream ProductRequest) returns (stream ProductUpdate) {};
+}
+
+message ProductRequest {
+  string id = 1;
+}
+
+message Product {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  float price = 4;
+  int32 stock = 5;
+}
+
+message ProductFilter {
+  float max_price = 1;
+  int32 min_stock = 2;
+}
+
+message CreateProductRequest {
+  Product product = 1;
+}
+
+message ProductSummary {
+  int32 created_count = 1;
+  float average_price = 2;
+}
+
+message ProductUpdate {
+  string id = 1;
+  string status = 2;
+  string message = 3;
+}

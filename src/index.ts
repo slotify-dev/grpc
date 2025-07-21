@@ -1,4 +1,4 @@
-// Import required gRPC modules
+#!/usr/bin/env node
 import * as grpc from '@grpc/grpc-js';
 import { ServerCredentials } from '@grpc/grpc-js';
 

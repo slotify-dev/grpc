@@ -22,11 +22,15 @@
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.13.4",
-    "@grpc/proto-loader": "^0.7.15",
-    "google-protobuf": "^3.21.4"
+    "@grpc/proto-loader": "^0.8.0",
+    "dotenv": "^17.2.0",
+    "google-protobuf": "^3.21.4",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
+    "@types/dotenv": "^8.2.3",
     "@types/node": "^20.19.9",
+    "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.57.1",
