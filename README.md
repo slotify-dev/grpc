@@ -71,36 +71,6 @@ grpc-app/
 └── config/                  # Configuration
 ```
 
-## Getting Started
-
-1. Install dependencies: `npm install`
-2. Generate types from proto files: `npm run generate`
-3. Start development server: `npm run dev`
-4. Run client: `npm run client`
-
-## Development Features
-
-- Hot reloading with ts-node-dev
-- TypeScript support
-- Protocol Buffer type generation
-- Docker containerization
-- Production-ready structure
-
-Key Advantages of Using Bun
-
-- Faster Installations: Bun installs dependencies significantly faster than npm/yarn
-- Better Performance: Bun's runtime is faster than Node.js for many operations
-- Built-in Tools: Comes with test runner, package manager, and bundler
-- Built-in Watch Mode: More efficient than ts-node-dev
-- Better Compatibility: Handles CommonJS/ESM interop better than Node
-- Smaller Docker Images: The oven/bun:slim image is very compact
-
-Potential Considerations
-
-- gRPC Tools: The protocol buffer compiler tools still need to run under Node.js compatibility mode
-- Maturity: Bun is newer than Node.js, though it's quite stable for most use cases
-- Native Modules: Some native modules might need recompilation
-
 ## Running the Project with Bun
 
 ```bash
