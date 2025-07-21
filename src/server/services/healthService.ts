@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type * as grpc from '@grpc/grpc-js';
 import * as health from 'grpc-js-health-check';
 
