@@ -33,42 +33,42 @@ Let me break down its architecture and core concepts before we dive into the Typ
 - Supports bidirectional streaming
 - Provides flow control and header compression
 
-### About gRPC
+## Key Communication Patterns
 
-gRPC is a modern, high-performance RPC (Remote Procedure Call) framework that can run in any environment.
+```bash
+# Unary RPC (Request-Response)
+client -> single request -> server
+client <- single response <- server
 
-Key features:
+# Server Streaming RPC
+client -> single request -> server
+client <- stream of responses <- server
 
-- Uses Protocol Buffers (protobuf) as interface definition language
-- Supports multiple languages
-- HTTP/2 based transport
-- Four types of service methods:
-  - Unary (single request, single response)
-  - Server streaming (single request, streamed responses)
-  - Client streaming (streamed requests, single response)
-  - Bidirectional streaming
+# Client Streaming RPC
+client -> stream of requests -> server
+client <- single response <- server
+
+# Bidirectional Streaming RPC
+client <-> stream of messages <-> server
+```
 
 ## Project Structure
 
 ```bash
-grpc-typescript/
-├── proto/      # Protocol Buffer definitions
+grpc-app/
+├── proto/                   # Protocol Buffer definitions
+│   └── service.proto        # Service contract
 ├── src/
-│ ├── client/   # gRPC client implementation
-│ ├── server/   # gRPC server implementation
-│ ├── services/ # Service implementations
-│ ├── types/    # TypeScript types/interfaces
-│ ├── utils/    # Utility functions
-│ └── index.ts  # Server entry point
-├── test/       # Unit and integration tests
-├── docker/     # Docker-related files
-├── .dockerignore
-├── .gitignore
-├── Dockerfile
-├── docker-compose.yml
-├── package.json
-├── tsconfig.json
-└── README.md
+│   ├── generated/           # Auto-generated code
+│   ├── client/              # gRPC client implementation
+│   ├── server/              # gRPC server implementation
+│   ├── services/            # Business logic
+│   ├── types/               # Type definitions
+│   ├── utils/               # Utilities
+│   └── index.ts             # Entry point
+├── test/                    # Tests
+├── docker/                  # Docker configs
+└── config/                  # Configuration
 ```
 
 ## Getting Started
