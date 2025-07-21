@@ -69,3 +69,29 @@ Potential Considerations
 - gRPC Tools: The protocol buffer compiler tools still need to run under Node.js compatibility mode
 - Maturity: Bun is newer than Node.js, though it's quite stable for most use cases
 - Native Modules: Some native modules might need recompilation
+
+## Running the Project with Bun
+
+```bash
+# Install dependencies
+bun install
+
+# Generate proto types
+bun run generate
+
+# Start the server (with hot reloading)
+bun run dev
+
+# Run the client
+bun run client
+```
+
+## Production Build with Bun
+
+```bash
+# Build for production
+bun run build
+
+# Run production server
+bun run start
+```
