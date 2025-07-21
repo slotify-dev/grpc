@@ -10,10 +10,10 @@ const PORT = 50051;
 const HOST = '0.0.0.0';
 const ADDRESS = `${HOST}:${PORT}`;
 
-// Start the server
+// Starts the server with insecure credentials (for development)
 server.bindAsync(
   ADDRESS,
-  ServerCredentials.createInsecure(), // Using insecure credentials for development
+  ServerCredentials.createInsecure(),
   (error) => {
     if (error) {
       console.error('Server binding failed:', error);
