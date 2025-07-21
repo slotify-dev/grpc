@@ -199,3 +199,20 @@ graph TD
 - Client libraries published
 - Health checks implemented
 - Deployment rollback plan
+
+## Debugging Tips
+
+- gRPCurl (like cURL for gRPC): ```grpcurl -plaintext localhost:50051 list```
+- BloomRPC - GUI client for gRPC
+- Logging Interceptors:
+
+```javascript
+const loggingInterceptor = (options, nextCall) => {
+  return new grpc.InterceptingCall(nextCall(options), {
+    start: (metadata, listener, next) => {
+      console.log('Starting call with metadata:', metadata);
+      next(metadata, listener);
+    }
+  });
+};
+```
